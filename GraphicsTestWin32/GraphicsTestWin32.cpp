@@ -1,4 +1,4 @@
-// GraphicsTestWin32.cpp : Downloads and displays a Bing Map
+// GraphicsTestWin32.cpp : Downloads and displays a Bing Map.  April 2020
 //
 #include <atlbase.h>
 #include "framework.h"
