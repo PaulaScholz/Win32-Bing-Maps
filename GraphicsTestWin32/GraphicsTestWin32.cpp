@@ -33,7 +33,7 @@
 // current UI state
 enum class CurrentUIState
 {
-    START,			// Start, display instructions
+    START,          // Start, display instructions
     SEATTLE,		// Display Seattle map
     PORTLAND,		// Display Portland Map
     SANFRAN,		// Display San Francisco map
@@ -66,7 +66,6 @@ typedef struct iovec
 {
     LPBYTE	pBytes;
     int		iovcnt;
-
 } IOVEC, * PIOVEC;
 
 // three HBITMAPs for three cities, created in 
@@ -652,7 +651,7 @@ HRESULT GetBingMap(LPCTSTR pszCityName, HBITMAP& refHbmOut, int requestedWidth =
     // https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key
 
     // Insert your Bing Maps key here
-    CString strBingMapsKey = TEXT("Your Bing Maps Key Here");
+    CString strBingMapsKey = TEXT("Your Bing Maps Key Here");    
 
     // this query will return a .jpg image
     // https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/get-a-static-map
@@ -717,7 +716,7 @@ HRESULT GetBingMap(LPCTSTR pszCityName, HBITMAP& refHbmOut, int requestedWidth =
                 FileMemoryBlock.iovcnt = dwBytesRead;
 
                 // copy the bytes read to the iovec byte buffer
-                memcpy(pFMBBuf, sBuf, (size_t)dwBytesRead);
+                memcpy_s(pFMBBuf, (size_t)dwBytesRead, sBuf, (size_t)dwBytesRead);
 
                 // store the pointer to the byte buffer in the IOVEC structure
                 FileMemoryBlock.pBytes = pFMBBuf;
@@ -828,57 +827,39 @@ HRESULT GetBingMap(LPCTSTR pszCityName, HBITMAP& refHbmOut, int requestedWidth =
                     // Render the image to a GDI device context
                     HBITMAP hDIBBitmap = NULL;
 
-                    try
-                    {
-                        // Get a DC for the full screen
-                        HDC hdcScreen = GetDC(NULL);
-                        if (!hdcScreen)
-                        {
-                            throw 1;
-                        }                            
+                    // Get a DC for the full screen
+                    HDC hdcScreen = GetDC(NULL);                          
 
-                        BITMAPINFO bminfo;
-                        ZeroMemory(&bminfo, sizeof(bminfo));
-                        bminfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                        bminfo.bmiHeader.biWidth = (LONG)retrievedWidth;
-                        bminfo.bmiHeader.biHeight = -(LONG)retrievedHeight;
-                        bminfo.bmiHeader.biPlanes = 1;
-                        bminfo.bmiHeader.biBitCount = 32;
-                        bminfo.bmiHeader.biCompression = BI_RGB;
+                    BITMAPINFO bminfo;
+                    ZeroMemory(&bminfo, sizeof(bminfo));
+                    bminfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                    bminfo.bmiHeader.biWidth = (LONG)retrievedWidth;
+                    bminfo.bmiHeader.biHeight = -(LONG)retrievedHeight;
+                    bminfo.bmiHeader.biPlanes = 1;
+                    bminfo.bmiHeader.biBitCount = 32;
+                    bminfo.bmiHeader.biCompression = BI_RGB;
 
-                        void* pvImageBits = nullptr;    // Freed in DestroyGDIObjects
+                    void* pvImageBits = nullptr;    // Freed in DestroyGDIObjects when we free the HBITMAP
 
-                        // Create the HBITMAP. Now, the hDIBBitmap points to the image buffer
-                        hDIBBitmap = CreateDIBSection(hdcScreen, &bminfo, DIB_RGB_COLORS, &pvImageBits, NULL, 0);
+                    // Create the HBITMAP. Now, the hDIBBitmap points to the image buffer where we'll put the bits
+                    hDIBBitmap = CreateDIBSection(hdcScreen, &bminfo, DIB_RGB_COLORS, &pvImageBits, NULL, 0);                           
 
-                        if (!hDIBBitmap)
-                        {
-                            throw 2;
-                        }                           
+                    ReleaseDC(NULL, hdcScreen);
 
-                        ReleaseDC(NULL, hdcScreen);
+                    // Calculate the number of bytes in 1 scanline
+                    UINT nStride = DIB_WIDTHBYTES(retrievedWidth * 32);
 
-                        // Calculate the number of bytes in 1 scanline
-                        UINT nStride = DIB_WIDTHBYTES(retrievedWidth * 32);
+                    // Calculate the total size of the image
+                    UINT numberOfImageBytes = nStride * retrievedHeight;
 
-                        // Calculate the total size of the image
-                        UINT numberOfImageBytes = nStride * retrievedHeight;
+                    // Copy the converted frame pixels to the DIB section image buffer
+                    CHK_HR(pIWICConvertedFrame->CopyPixels(nullptr, nStride, numberOfImageBytes, reinterpret_cast<LPBYTE>(pvImageBits)));
 
-                        // Copy the converted frame pixels to the DIB section image buffer
-                        CHK_HR(pIWICConvertedFrame->CopyPixels(nullptr, nStride, numberOfImageBytes, reinterpret_cast<LPBYTE>(pvImageBits)));
-
-                        // The refHBitmapOut must have DeleteObject called on it somewhere or
-                        // there will be a GDI memory and handle leak!!!!!!
-                        //
-                        // We do this in DestroyGDIObjects, called from the WM_DESTROY event handler.
-                        refHbmOut = hDIBBitmap;
-                            
-                    }
-                    catch (...)
-                    {
-                        OutputDebugString(L"Error creating refHbmOut.\n");
-                        throw;
-                    }
+                    // The refHBitmapOut must have DeleteObject called on it somewhere or
+                    // there will be a GDI memory and handle leak!!!!!!
+                    //
+                    // We do this in DestroyGDIObjects, called from the WM_DESTROY event handler.
+                    refHbmOut = hDIBBitmap;                           
                 }
                 else
                 {
