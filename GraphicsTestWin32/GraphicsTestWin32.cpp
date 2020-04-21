@@ -757,7 +757,7 @@ HRESULT GetBingMap(LPCTSTR pszCityName, HBITMAP& refHbmOut, int requestedWidth =
 
                     // copy the memory in the iovec segment to the pBuf buffer.  Remember, pNew points
                     // to an address inside already-allocated pBuf.
-                    memcpy(pNew, (const void*)(it->pBytes), (size_t)(it->iovcnt));
+                    memcpy_s(pNew, (size_t)(it->iovcnt), (const void*)(it->pBytes), (size_t)(it->iovcnt));
 
                     // increment the buffer pointer inside pBuf
                     i += (size_t)(it->iovcnt);
