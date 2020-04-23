@@ -29,6 +29,10 @@ For Debug builds:
 For Release builds:
 ![Release builds](ReadmeImages/MT.png)
 
+## ApiValidator
+
+The [ApiValidator](https://docs.microsoft.com/en-us/windows-hardware/drivers/develop/validating-universal-drivers) tool is part of the [Windows Driver Kit](https://docs.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk). This tool is used to validate that APIs used are valid for a Universal Windows driver, and works for Applications as well as drivers. Applications that are not reported as `Universal` will fail Windows Store testing and will not be published.
+
 ## Spectre Mitigation
 
 To mitigate [Spectre variant 1](https://support.microsoft.com/en-us/help/4073757/protect-windows-devices-from-speculative-execution-side-channel-attack) security vulnerabilities, your code should be compiled with the [/QSpectre](https://docs.microsoft.com/en-us/cpp/build/reference/qspectre?view=vs-2019) option and linked with the appropriate runtime libraries, which are not installed by default but instead must be installed by using the `Visual Studio Installer`.  `Qspectre` compilation options are set on the same Code Generation page as the `Runtime Libraries`.
