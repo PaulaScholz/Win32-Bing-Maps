@@ -10,10 +10,23 @@ This project is an update of an earlier now-obsolete [version](https://www.codep
 To use the [Bing Maps APIs](https://docs.microsoft.com/en-us/bingmaps/rest-services/), you must have a [Bing Maps Key](https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key).  These are easy to obtain and at the time of writing (April 2020) are free for development use.
 
 ## Visual Studio Solution
-
 The Visual Studio solution is shown below:
 
 ![Visual Studio Solution](ReadmeImages/VisualStudioSolution.png)
 
 All the relevant code is in the GraphicsTestWin32.cpp file.
 
+## Compilation Options
+To run alongside [Windows Runtime](https://docs.microsoft.com/en-us/windows/uwp/winrt-components/) components on Windows 10x, your code must be compiled to use static libraries and not Dynamic Link Libraries.  This mainly affects the use of the [C-Runtime](https://docs.microsoft.com/en-us/cpp/c-runtime-library/windows-store-apps-the-windows-runtime-and-the-c-run-time?view=vs-2019).  
+
+To set your compilation options to compile with the static C-Runtime libraries, you must change the default compilation options of newly-generated Visual Studio C++ projects, which use Dynamic Link Library C-Runtime by default.  This is accomplished by right-clicking on your project file and selecting the Properties option at the bottom of the Context menu.  
+
+On theConfiguration Properties dialog, expand the Code Generation tab under the C/C++ tree and change the default value from Multi-threaded 
+
+Static runtime libraries must be chosen for both Debug and Release builds by changing the default value from `Multi-threaded DLL` or `Multi-threaded Debug DLL` to `Multi-threaded` or `Multi-threaded Debug`.
+
+For Debug builds:
+![Debug builds](ReadmeImages/MTd.png)
+
+For Release builds:
+![Release builds](ReadmeImages/MT.png)
