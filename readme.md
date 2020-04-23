@@ -21,9 +21,7 @@ To run alongside [Windows Runtime](https://docs.microsoft.com/en-us/windows/uwp/
 
 To set your compilation options to compile with the static C-Runtime libraries, you must change the default compilation options of newly-generated Visual Studio C++ projects, which use Dynamic Link Library C-Runtime by default.  This is accomplished by right-clicking on your project file and selecting the Properties option at the bottom of the Context menu.  
 
-On the Configuration Properties dialog, expand the Code Generation tab under the C/C++ tree and change the default value from Multi-threaded 
-
-Static runtime libraries must be chosen for both Debug and Release builds by changing the default value from `Multi-threaded DLL` or `Multi-threaded Debug DLL` to `Multi-threaded` or `Multi-threaded Debug`.
+On the Configuration Properties dialog, expand the Code Generation tab under the C/C++ tree.  Static runtime libraries must be chosen for both Debug and Release builds by changing the default `Runtime Library` value from `Multi-threaded DLL` or `Multi-threaded Debug DLL` to `Multi-threaded` or `Multi-threaded Debug`.
 
 For Debug builds:
 ![Debug builds](ReadmeImages/MTd.png)
