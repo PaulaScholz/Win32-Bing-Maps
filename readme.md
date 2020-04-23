@@ -17,7 +17,7 @@ The Visual Studio solution is shown below:
 All the relevant code is in the GraphicsTestWin32.cpp file.
 
 ## Compilation Options
-To run alongside [Windows Runtime](https://docs.microsoft.com/en-us/windows/uwp/winrt-components/) components on Windows 10x, your code must be compiled to use static libraries and not Dynamic Link Libraries.  This mainly affects the use of the [C-Runtime](https://docs.microsoft.com/en-us/cpp/c-runtime-library/windows-store-apps-the-windows-runtime-and-the-c-run-time?view=vs-2019).  
+To run alongside [Windows Runtime](https://docs.microsoft.com/en-us/windows/uwp/winrt-components/) components on Windows 10x or to be published on the [Windows Store](https://developer.microsoft.com/en-us/store/), your code must be compiled to use static libraries and not Dynamic Link Libraries.  This mainly affects the use of the [C-Runtime](https://docs.microsoft.com/en-us/cpp/c-runtime-library/windows-store-apps-the-windows-runtime-and-the-c-run-time?view=vs-2019).  
 
 To set your compilation options to compile with the static C-Runtime libraries, you must change the default compilation options of newly-generated Visual Studio C++ projects, which use Dynamic Link Library C-Runtime by default.  This is accomplished by right-clicking on your project file and selecting the Properties option at the bottom of the Context menu.  
 
